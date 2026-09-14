@@ -10,16 +10,30 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^12.19.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "@aws-sdk/client-ses": "^3.654.0",
+    "@vercel/node": "^3.0.0",
     "oxlint": "^1.81.0",
     "typescript": "~6.0.2",
     "vite": "^8.3.0"
+  },
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
   }
 }
