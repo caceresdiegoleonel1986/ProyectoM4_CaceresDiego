@@ -8,19 +8,23 @@ import { ProtectedRoute } from "./ProtectedRoute";
 
 export const AppRouter = () => (
     <BrowserRouter>
-        <Navbar />
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route
-                path="/tasks"
-                element={
-                    <ProtectedRoute>
-                        <TasksPage />
-                    </ProtectedRoute>
-                }
-            />
-        </Routes>
+        <div className="app-layout">
+            <Navbar />
+            <main className="main-content">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
+                    <Route
+                        path="/tasks"
+                        element={
+                            <ProtectedRoute>
+                                <TasksPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                </Routes>
+            </main>
+        </div>
     </BrowserRouter>
-);
+);
