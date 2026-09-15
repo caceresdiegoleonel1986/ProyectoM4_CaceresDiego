@@ -1,0 +1,30 @@
+:root {
+    /* Paleta principal */
+    --bg: #f0f0ff;
+    --bg-card: #ffffff;
+    --sidebar-grad: linear-gradient(180deg, #4f46e5 0%, #7c3aed 60%, #5b21b6 100%);
+
+    --accent: #6d28d9;
+    --accent-light: #ede9fe;
+    --accent-hover: #5b21b6;
+    --teal: #0ea5e9;
+    --green: #10b981;
+    --red: #ef4444;
+
+    --text: #374151;
+    --text-muted: #9ca3af;
+    --text-h: #111827;
+    --text-sidebar: rgba(255, 255, 255, 0.85);
+
+    --border: #e5e7eb;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(109, 40, 217, 0.12);
+    --shadow-lg: 0 10px 40px rgba(109, 40, 217, 0.18);
+
+    --font: 'Inter', system-ui, sans-serif;
+    --transition: 0.2s ease;
+}
