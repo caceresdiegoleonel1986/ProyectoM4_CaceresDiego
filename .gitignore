@@ -40,3 +40,6 @@ Thumbs.db
 
 # Despliegues / Servicios
 .vercel/
+
+# TypeScript build info
+*.tsbuildinfo
