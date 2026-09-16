@@ -137,6 +137,7 @@
     0% {
         transform: translateY(0px);
     }
+
     100% {
         transform: translateY(-6px);
     }
@@ -167,6 +168,7 @@
 
 .home-hero h1 span {
     background: linear-gradient(135deg, #6d28d9 0%, #3b82f6 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -363,4 +365,4 @@
     letter-spacing: -1px;
     line-height: 1.1;
     margin-top: 2px;
-}
+}
