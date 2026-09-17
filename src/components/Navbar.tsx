@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import logoApp from "../assets/LogoApp.png";
+import kairoIcon from "../assets/kairo-icon.png";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
@@ -12,10 +12,13 @@ const Navbar = () => {
 
     return (
         <nav className="navbar">
-            <div className="navbar-brand">
-                <img src={logoApp} alt="Logo App" className="brand-logo-img" />
-                <span>TaskFlow</span>
-            </div>
+            <Link to="/" className="navbar-brand">
+                <img src={kairoIcon} alt="Kairo Tasks" className="brand-logo-img" />
+                <div className="brand-text">
+                    <span className="brand-name-kairo">Kairo</span>
+                    <span className="brand-name-tasks">Tasks</span>
+                </div>
+            </Link>
 
             {user && (
                 <div className="navbar-user-card">
@@ -39,15 +42,26 @@ const Navbar = () => {
                 </li>
 
                 {user ? (
-                    <li>
-                        <Link
-                            to="/tasks"
-                            className={`navbar-link ${location.pathname === "/tasks" ? "active" : ""}`}
-                        >
-                            <span className="nav-icon">📋</span>
-                            <span>Mis Tareas</span>
-                        </Link>
-                    </li>
+                    <>
+                        <li>
+                            <Link
+                                to="/tasks"
+                                className={`navbar-link ${location.pathname === "/tasks" ? "active" : ""}`}
+                            >
+                                <span className="nav-icon">📋</span>
+                                <span>Mis Tareas</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/agenda"
+                                className={`navbar-link ${location.pathname === "/agenda" ? "active" : ""}`}
+                            >
+                                <span className="nav-icon">📅</span>
+                                <span>Agenda</span>
+                            </Link>
+                        </li>
+                    </>
                 ) : (
                     <>
                         <li>
