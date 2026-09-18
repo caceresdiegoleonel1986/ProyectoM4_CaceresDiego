@@ -29,17 +29,17 @@
 }
 
 .auth-logo-img {
-    width: 64px;
-    height: 64px;
+    width: auto;
+    max-width: 220px;
+    height: 52px;
     object-fit: contain;
-    border-radius: 16px;
     margin-bottom: 16px;
-    filter: drop-shadow(0 8px 20px rgba(109, 40, 217, 0.25));
+    filter: drop-shadow(0 6px 16px rgba(109, 40, 217, 0.2));
     transition: transform var(--transition);
 }
 
 .auth-logo-img:hover {
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 .auth-logo {
@@ -125,11 +125,11 @@
 }
 
 .home-hero-logo {
-    width: 76px;
-    height: 76px;
+    width: auto;
+    max-width: 320px;
+    height: 72px;
     object-fit: contain;
-    border-radius: 20px;
-    filter: drop-shadow(0 10px 24px rgba(109, 40, 217, 0.25));
+    filter: drop-shadow(0 12px 28px rgba(109, 40, 217, 0.22));
     animation: floatLogo 3s ease-in-out infinite alternate;
 }
 
