@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import LoginPage from "../pages/Login";
 import RegisterPage from "../pages/Register";
 import TasksPage from "../pages/Tasks";
+import AgendaPage from "../pages/Agenda";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export const AppRouter = () => (
@@ -20,6 +21,14 @@ export const AppRouter = () => (
                         element={
                             <ProtectedRoute>
                                 <TasksPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/agenda"
+                        element={
+                            <ProtectedRoute>
+                                <AgendaPage />
                             </ProtectedRoute>
                         }
                     />
