@@ -6,6 +6,40 @@ interface TodoListProps {
     searchQuery?: string;
 }
 
+const getDueDateBadge = (dueDate?: number | string | null, completed = false) => {
+    if (!dueDate) return null;
+    let dueTime: number;
+    let dueString = "";
+    if (typeof dueDate === "number") {
+        dueTime = dueDate;
+        dueString = new Date(dueDate).toISOString().split("T")[0];
+    } else {
+        dueString = dueDate;
+        dueTime = new Date(`${dueDate}T23:59:59`).getTime();
+    }
+    const todayStr = new Date().toISOString().split("T")[0];
+    const isToday = dueString === todayStr;
+    const isPast = dueTime < new Date().setHours(0, 0, 0, 0);
+
+    const parts = dueString.split("-");
+    const formatted = parts.length === 3 ? `${parseInt(parts[2], 10)}/${parseInt(parts[1], 10)}` : dueString;
+
+    if (isToday) {
+        return <span className="badge badge-amber">🗓️ Para hoy</span>;
+    }
+    if (isPast && !completed) {
+        return <span className="badge badge-red">⚠️ Vencida ({formatted})</span>;
+    }
+    return <span className="badge badge-blue">🗓️ {formatted}</span>;
+};
+
+const getPriorityBadge = (priority?: "low" | "medium" | "high") => {
+    if (!priority) return null;
+    if (priority === "high") return <span className="badge badge-red">⚡ Alta</span>;
+    if (priority === "low") return <span className="badge badge-muted">Baja</span>;
+    return <span className="badge badge-purple">Media</span>;
+};
+
 const TodoList = ({ filter = "all", searchQuery = "" }: TodoListProps) => {
     const { tasks, loading, updateTask, deleteTask } = useTasks();
 
@@ -96,9 +130,11 @@ const TodoList = ({ filter = "all", searchQuery = "" }: TodoListProps) => {
                                 >
                                     {task.completed ? "✓ Completada" : "● Pendiente"}
                                 </span>
+                                {getDueDateBadge(task.dueDate, task.completed)}
+                                {getPriorityBadge(task.priority)}
                                 {dateStr && (
                                     <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                                        📅 {dateStr}
+                                        Creada: {dateStr}
                                     </span>
                                 )}
                             </div>
