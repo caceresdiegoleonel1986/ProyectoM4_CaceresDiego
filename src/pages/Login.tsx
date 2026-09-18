@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import kairoLogoFull from "../assets/kairo-logo-full.png";
 
 const LoginPage = () => {
@@ -10,6 +10,10 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Ruta previa o fallback a /tasks
+    const from = location.state?.from || "/tasks";
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -18,9 +22,13 @@ const LoginPage = () => {
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            navigate("/tasks");
+            navigate(from, { replace: true });
         } catch (err: any) {
-            if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password" || err.code === "auth/user-not-found") {
+            if (
+                err.code === "auth/invalid-credential" ||
+                err.code === "auth/wrong-password" ||
+                err.code === "auth/user-not-found"
+            ) {
                 setError("Correo o contraseña incorrectos.");
             } else if (err.code === "auth/invalid-email") {
                 setError("El formato de correo no es válido.");
@@ -98,4 +106,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default LoginPage;
