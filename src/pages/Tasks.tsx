@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import TodoList from "../components/TodoList";
 import TodoForm from "../components/TodoForm";
 import { useAuth } from "../hooks/useAuth";
@@ -35,9 +36,14 @@ const TasksPage = () => {
                     <h1>¡Hola, {userName}! 👋</h1>
                     <p>Organiza, gestiona y completa tus tareas diarias.</p>
                 </div>
-                <div className="tasks-date-pill">
-                    <span>🗓️</span>
-                    <span>{formattedDate}</span>
+                <div className="tasks-top-actions">
+                    <Link to="/agenda" className="btn btn-secondary btn-sm">
+                        📅 Ver Agenda
+                    </Link>
+                    <div className="tasks-date-pill">
+                        <span>🗓️</span>
+                        <span>{formattedDate}</span>
+                    </div>
                 </div>
             </div>
 
