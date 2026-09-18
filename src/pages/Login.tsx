@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebase";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../services/firebase";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import kairoLogoFull from "../assets/kairo-logo-full.png";
 
@@ -12,7 +12,6 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Ruta previa o fallback a /tasks
     const from = location.state?.from || "/tasks";
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -37,6 +36,16 @@ const LoginPage = () => {
             }
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        setError("");
+        try {
+            await signInWithPopup(auth, googleProvider);
+            navigate(from, { replace: true });
+        } catch (err: any) {
+            setError("Error al iniciar sesión con Google: " + err.message);
         }
     };
 
@@ -87,6 +96,15 @@ const LoginPage = () => {
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? "Ingresando..." : "Iniciar Sesión"}
+                    </button>
+
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        style={{ width: "100%", padding: "12px", marginTop: "8px" }}
+                        onClick={handleGoogleLogin}
+                    >
+                        Iniciar sesión con Google
                     </button>
 
                     {error && (
