@@ -89,10 +89,90 @@
 }
 
 .todo-form-row .form-input-desc {
-    flex: 3;
-    min-width: 220px;
+    flex: 2.5;
+    min-width: 200px;
+}
+
+.todo-form-row .form-date-wrap {
+    flex: 1.2;
+    min-width: 140px;
+}
+
+.todo-form-row .form-input-date {
+    padding: 10px 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.todo-form-row .form-select-priority {
+    width: auto;
+    min-width: 110px;
+    padding: 10px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
 }
 
 .todo-form-row .btn {
     flex-shrink: 0;
+}
+
+.todo-form-quick-dates {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.quick-date-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.btn-quick-date {
+    background: #f3f4f6;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-quick-date:hover {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: #c4b5fd;
+}
+
+.btn-quick-date.active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+.btn-clear-date {
+    background: #fef2f2;
+    color: var(--red);
+    border-color: #fecaca;
+}
+
+.btn-clear-date:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Compact form */
+.todo-form-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-select-sm {
+    padding: 8px 12px;
+    font-size: 13px;
 }
