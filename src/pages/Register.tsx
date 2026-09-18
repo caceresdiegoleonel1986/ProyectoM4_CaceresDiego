@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useNavigate, Link } from "react-router-dom";
-import logoApp from "../assets/LogoApp.png";
+import kairoLogoFull from "../assets/kairo-logo-full.png";
 
 const RegisterPage = () => {
     const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ const RegisterPage = () => {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-header">
-                    <img src={logoApp} alt="Logo App" className="auth-logo-img" />
+                    <img src={kairoLogoFull} alt="Kairo Tasks Logo" className="auth-logo-img" />
                     <h2>Crea tu cuenta</h2>
                     <p className="auth-subtitle">Empieza a organizar tus tareas de forma inteligente</p>
                 </div>
