@@ -1,9 +1,11 @@
-import { useTasks } from "../hooks/useTasks";
+import type { Task } from "../types/task";
 import Loader from "./Loader";
 
 interface TodoListProps {
-    filter?: "all" | "pending" | "completed";
-    searchQuery?: string;
+    tasks: Task[];
+    loading: boolean;
+    updateTask: (id: string, updates: Partial<Task>) => Promise<void>;
+    deleteTask: (id: string) => Promise<void>;
 }
 
 const getDueDateBadge = (dueDate?: number | string | null, completed = false) => {
@@ -40,70 +42,35 @@ const getPriorityBadge = (priority?: "low" | "medium" | "high") => {
     return <span className="badge badge-purple">Media</span>;
 };
 
-const TodoList = ({ filter = "all", searchQuery = "" }: TodoListProps) => {
-    const { tasks, loading, updateTask, deleteTask } = useTasks();
-
+const TodoList = ({ tasks, loading, updateTask, deleteTask }: TodoListProps) => {
     if (loading) {
         return <Loader message="Cargando tus tareas..." />;
     }
 
-    // Filter tasks based on status and search query
-    const filteredTasks = tasks.filter((task) => {
-        // Status filter
-        if (filter === "pending" && task.completed) return false;
-        if (filter === "completed" && !task.completed) return false;
-
-        // Search query filter
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            const matchTitle = task.title.toLowerCase().includes(query);
-            const matchDesc = task.description?.toLowerCase().includes(query);
-            return matchTitle || matchDesc;
-        }
-
-        return true;
-    });
-
-    if (filteredTasks.length === 0) {
+    if (!tasks || tasks.length === 0) {
         return (
             <div className="empty-state">
                 <div className="empty-icon">📝</div>
-                <h3 className="empty-title">
-                    {searchQuery
-                        ? "No se encontraron tareas con esa búsqueda"
-                        : filter === "completed"
-                        ? "Aún no tienes tareas completadas"
-                        : filter === "pending"
-                        ? "¡No tienes tareas pendientes! Todo al día 🎉"
-                        : "No tienes tareas agregadas"}
-                </h3>
-                <p className="empty-desc">
-                    {searchQuery
-                        ? "Prueba buscando con otra palabra o limpia el filtro."
-                        : "Crea una nueva tarea arriba para empezar a organizar tu día."}
-                </p>
+                <h3 className="empty-title">No hay tareas para mostrar</h3>
+                <p className="empty-desc">Crea una nueva tarea arriba para empezar a organizar tu día.</p>
             </div>
         );
     }
 
     return (
         <div className="task-list">
-            {filteredTasks.map((task) => {
-                // Format creation date
+            {tasks.map((task) => {
                 const dateStr = task.createdAt
                     ? new Date(task.createdAt).toLocaleDateString("es-ES", {
-                          day: "numeric",
-                          month: "short",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                      })
+                        day: "numeric",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })
                     : null;
 
                 return (
-                    <div
-                        key={task.id}
-                        className={`task-item ${task.completed ? "completed" : ""}`}
-                    >
+                    <div key={task.id} className={`task-item ${task.completed ? "completed" : ""}`}>
                         {/* Checkbox button */}
                         <button
                             type="button"
@@ -119,15 +86,9 @@ const TodoList = ({ filter = "all", searchQuery = "" }: TodoListProps) => {
                             <div className={`task-title ${task.completed ? "done" : ""}`}>
                                 {task.title}
                             </div>
-                            {task.description && (
-                                <p className="task-description">{task.description}</p>
-                            )}
+                            {task.description && <p className="task-description">{task.description}</p>}
                             <div className="task-meta">
-                                <span
-                                    className={`badge ${
-                                        task.completed ? "badge-green" : "badge-purple"
-                                    }`}
-                                >
+                                <span className={`badge ${task.completed ? "badge-green" : "badge-purple"}`}>
                                     {task.completed ? "✓ Completada" : "● Pendiente"}
                                 </span>
                                 {getDueDateBadge(task.dueDate, task.completed)}
@@ -158,4 +119,4 @@ const TodoList = ({ filter = "all", searchQuery = "" }: TodoListProps) => {
     );
 };
 
-export default TodoList;
+export default TodoList;
