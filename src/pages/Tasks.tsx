@@ -4,21 +4,23 @@ import TodoList from "../components/TodoList";
 import TodoForm from "../components/TodoForm";
 import { useAuth } from "../hooks/useAuth";
 import { useTasks } from "../hooks/useTasks";
+import type { Task } from "../types/task";
 
 const TasksPage = () => {
     const { user } = useAuth();
-    const { tasks } = useTasks();
+    const { tasks, loading, updateTask, deleteTask } = useTasks();
 
     const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
+    const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high">("all");
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Calculate metrics for stats cards
+    // Métricas
     const total = tasks.length;
     const completed = tasks.filter((t) => t.completed).length;
     const pending = total - completed;
     const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    // Format current date
+    // Fecha actual
     const today = new Date().toLocaleDateString("es-ES", {
         weekday: "long",
         day: "numeric",
@@ -27,6 +29,24 @@ const TasksPage = () => {
     const formattedDate = today.charAt(0).toUpperCase() + today.slice(1);
 
     const userName = user?.displayName || user?.email?.split("@")[0] || "Usuario";
+
+    // 🔹 Filtrado combinado
+    const filteredTasks: Task[] = tasks.filter((t) => {
+        const matchesStatus =
+            filter === "all" ||
+            (filter === "completed" && t.completed) ||
+            (filter === "pending" && !t.completed);
+
+        const matchesPriority =
+            priorityFilter === "all" || t.priority === priorityFilter;
+
+        const matchesSearch =
+            searchQuery === "" ||
+            t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (t.description ?? "").toLowerCase().includes(searchQuery.toLowerCase());
+
+        return matchesStatus && matchesPriority && matchesSearch;
+    });
 
     return (
         <div className="tasks-page-container">
@@ -47,7 +67,7 @@ const TasksPage = () => {
                 </div>
             </div>
 
-            {/* Stats Cards (Inspiration from Pinterest/Figma screenshots) */}
+            {/* Stats Cards */}
             <div className="stats-grid">
                 <div className="stat-card">
                     <div className="stat-icon stat-icon-purple">📋</div>
@@ -118,14 +138,51 @@ const TasksPage = () => {
                         Completadas ({completed})
                     </button>
                 </div>
+
+                {/* 🔹 Tabs de prioridad */}
+                <div className="priority-tabs">
+                    <button
+                        type="button"
+                        className={`filter-tab ${priorityFilter === "all" ? "active" : ""}`}
+                        onClick={() => setPriorityFilter("all")}
+                    >
+                        Todas
+                    </button>
+                    <button
+                        type="button"
+                        className={`filter-tab ${priorityFilter === "low" ? "active" : ""}`}
+                        onClick={() => setPriorityFilter("low")}
+                    >
+                        Baja
+                    </button>
+                    <button
+                        type="button"
+                        className={`filter-tab ${priorityFilter === "medium" ? "active" : ""}`}
+                        onClick={() => setPriorityFilter("medium")}
+                    >
+                        Media
+                    </button>
+                    <button
+                        type="button"
+                        className={`filter-tab ${priorityFilter === "high" ? "active" : ""}`}
+                        onClick={() => setPriorityFilter("high")}
+                    >
+                        Alta
+                    </button>
+                </div>
             </div>
 
             {/* Tasks List */}
             <div className="task-list-section">
-                <TodoList filter={filter} searchQuery={searchQuery} />
+                <TodoList
+                    tasks={filteredTasks}
+                    loading={loading}
+                    updateTask={updateTask}
+                    deleteTask={deleteTask}
+                />
             </div>
         </div>
     );
 };
 
-export default TasksPage;
+export default TasksPage;
