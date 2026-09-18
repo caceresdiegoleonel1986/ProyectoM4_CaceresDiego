@@ -2,7 +2,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useNavigate, Link } from "react-router-dom";
-import logoApp from "../assets/LogoApp.png";
+import kairoLogoFull from "../assets/kairo-logo-full.png";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -36,7 +36,7 @@ const LoginPage = () => {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-header">
-                    <img src={logoApp} alt="Logo App" className="auth-logo-img" />
+                    <img src={kairoLogoFull} alt="Kairo Tasks Logo" className="auth-logo-img" />
                     <h2>Bienvenido de nuevo</h2>
                     <p className="auth-subtitle">Ingresa tus credenciales para acceder a tus tareas</p>
                 </div>
