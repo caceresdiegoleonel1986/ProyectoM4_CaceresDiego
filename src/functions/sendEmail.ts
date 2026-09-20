@@ -1,41 +1,59 @@
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-// Configuración del cliente SES con credenciales seguras en variables de entorno
-const sesClient = new SESClient({
+// Inicializa el cliente SES con las credenciales del entorno
+const ses = new SESClient({
     region: process.env.AWS_REGION,
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
     },
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== "POST") {
-        return res.status(405).json({ error: "Método no permitido" });
+        return res.status(405).json({ error: "Method Not Allowed" });
     }
 
-    const { to, subject, body } = req.body;
+    const { to, summary } = req.body ?? {};
 
-    if (!to || !subject || !body) {
-        return res.status(400).json({ error: "Faltan parámetros" });
+    if (!to || !summary) {
+        return res
+            .status(400)
+            .json({ error: "Missing required fields: to, summary" });
+    }
+
+    const from = process.env.SES_FROM_EMAIL;
+    if (!from) {
+        return res
+            .status(500)
+            .json({ error: "Server misconfigured: SES_FROM_EMAIL missing" });
     }
 
     try {
         const command = new SendEmailCommand({
+            Source: from,
             Destination: { ToAddresses: [to] },
             Message: {
-                Body: { Text: { Data: body } },
-                Subject: { Data: subject },
+                Subject: { Data: "Tu resumen de TODOs" },
+                Body: { Text: { Data: summary } },
             },
-            Source: process.env.AWS_SES_SOURCE_EMAIL!, // Email verificado en SES
         });
 
-        await sesClient.send(command);
+        const result = await ses.send(command);
 
-        return res.status(200).json({ success: true, message: "Email enviado correctamente" });
-    } catch (error) {
-        console.error("Error enviando email:", error);
-        return res.status(500).json({ error: "Error al enviar email" });
+        return res.status(200).json({
+            ok: true,
+            messageId: result.MessageId,
+        });
+    } catch (err: any) {
+        // No loguear secretos; sí loguear el error para debug.
+        console.error("SES send error:", err?.name, err?.message);
+
+        return res.status(500).json({
+            ok: false,
+            error: err?.name ?? "UnknownError",
+            message: err?.message ?? "Failed to send email",
+        });
     }
 }
