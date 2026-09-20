@@ -1,9 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-// Inicializa el cliente SES con las credenciales del entorno
 const ses = new SESClient({
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION || "us-east-1",
     credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
@@ -35,7 +34,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             Source: from,
             Destination: { ToAddresses: [to] },
             Message: {
-                Subject: { Data: "Tu resumen de TODOs" },
+                Subject: { Data: "Tu resumen de tareas - Kairo Tasks" },
                 Body: { Text: { Data: summary } },
             },
         });
@@ -44,10 +43,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         return res.status(200).json({
             ok: true,
+            message: "Email enviado correctamente",
             messageId: result.MessageId,
         });
     } catch (err: any) {
-        // No loguear secretos; sí loguear el error para debug.
         console.error("SES send error:", err?.name, err?.message);
 
         return res.status(500).json({
