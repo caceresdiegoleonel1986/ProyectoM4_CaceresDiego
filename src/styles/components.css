@@ -626,7 +626,7 @@
     font-size: 11px !important;
     font-weight: 600 !important;
     margin-bottom: 2px !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform var(--transition);
     cursor: pointer;
 }
@@ -660,9 +660,17 @@
     border-radius: 50%;
 }
 
-.dot-green { background: #10b981; }
-.dot-purple { background: #6d28d9; }
-.dot-red { background: #ef4444; }
+.dot-green {
+    background: #10b981;
+}
+
+.dot-purple {
+    background: #6d28d9;
+}
+
+.dot-red {
+    background: #ef4444;
+}
 
 /* Day Inspector Panel */
 .agenda-day-panel {
@@ -825,4 +833,115 @@
     display: flex;
     gap: 6px;
     margin-top: 4px;
-}
+}
+
+/* ============================
+   EMAIL SUMMARY BUTTON & TOASTS (versión integrada)
+   ============================ */
+.email-summary-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-email-summary {
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    color: var(--accent);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(109, 40, 217, 0.12);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all var(--transition);
+}
+
+.btn-email-summary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ddd6fe 0%, #e9d5ff 100%);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(109, 40, 217, 0.18);
+}
+
+.btn-email-summary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-email-summary.btn-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #6ee7b7;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.spinner-inline {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(109, 40, 217, 0.25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+}
+
+/* Floating feedback toast */
+.email-toast {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(109, 40, 217, 0.15);
+    animation: toastSlideFade 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes toastSlideFade {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) translateX(0);
+    }
+}
+
+.email-toast-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.email-toast-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.email-toast-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    color: inherit;
+    opacity: 0.7;
+    padding: 0 2px;
+    margin-left: 4px;
+    transition: opacity var(--transition);
+}
+
+.email-toast-close:hover {
+    opacity: 1;
+}
