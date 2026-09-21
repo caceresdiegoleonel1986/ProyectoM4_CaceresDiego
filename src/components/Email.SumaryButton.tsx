@@ -39,12 +39,33 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
   }
 
   return (
-    <div>
-      <button onClick={handleSend} disabled={status === "loading"}>
-        {status === "loading" ? "Enviando..." : "Enviar mi resumen"}
+    <div className="email-summary-wrapper">
+      <button
+        className={`btn-email-summary ${status === "success" ? "btn-success" : ""}`}
+        onClick={handleSend}
+        disabled={status === "loading"}
+      >
+        {status === "loading" ? (
+          <>
+            <span className="spinner-inline"></span> Enviando...
+          </>
+        ) : (
+          "📧 Enviar mi resumen"
+        )}
       </button>
-      {status === "success" && <span style={{ color: "green" }}>¡Email enviado!</span>}
-      {status === "error" && <span style={{ color: "red" }}>{errorMsg}</span>}
+
+      {status === "success" && (
+        <div className="email-toast email-toast-success">
+          ¡Email enviado!
+          <button className="email-toast-close" onClick={() => setStatus("idle")}>✕</button>
+        </div>
+      )}
+      {status === "error" && (
+        <div className="email-toast email-toast-error">
+          {errorMsg}
+          <button className="email-toast-close" onClick={() => setStatus("idle")}>✕</button>
+        </div>
+      )}
     </div>
   );
 }
