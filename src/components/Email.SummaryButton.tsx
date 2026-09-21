@@ -3,12 +3,12 @@ import type { Task } from "../types/task";
 
 interface EmailSummaryButtonProps {
   todos: Task[];
-  userEmail: string | null | undefined;
+  userEmail: string | null;
 }
 
 export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSend() {
     setStatus("loading");
@@ -32,7 +32,7 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
       }
 
       setStatus("success");
-    } catch (err) {
+    } catch {
       setStatus("error");
       setErrorMsg("No se pudo conectar con el servidor.");
     }
@@ -60,6 +60,7 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
           <button className="email-toast-close" onClick={() => setStatus("idle")}>✕</button>
         </div>
       )}
+
       {status === "error" && (
         <div className="email-toast email-toast-error">
           {errorMsg}
@@ -72,8 +73,8 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
 
 // Construye el resumen de tareas
 function buildTodoSummary(todos: Task[]): string {
-  const pendientes = todos.filter((t: Task) => !t.completed).length;
-  const completadas = todos.filter((t: Task) => t.completed).length;
+  const pendientes = todos.filter(t => !t.completed).length;
+  const completadas = todos.filter(t => t.completed).length;
   return `Pendientes: ${pendientes}\nCompletadas: ${completadas}`;
 }
 
