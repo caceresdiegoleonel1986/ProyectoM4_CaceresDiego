@@ -77,4 +77,14 @@ describe("EmailSummaryButton", () => {
 
         expect(screen.getByRole("button", { name: /Enviando/i })).toBeDisabled();
     });
+
+    it("deshabilita el botón y no llama a fetch cuando no hay tareas (caso borde)", () => {
+        render(<EmailSummaryButton todos={[]} userEmail="test@example.com" />);
+
+        const button = screen.getByRole("button", { name: /Enviar mi resumen/i });
+        expect(button).toBeDisabled();
+
+        fireEvent.click(button);
+        expect(globalThis.fetch).not.toHaveBeenCalled();
+    });
 });
