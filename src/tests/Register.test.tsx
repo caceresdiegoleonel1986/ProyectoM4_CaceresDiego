@@ -4,13 +4,15 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import RegisterPage from "../pages/Register";
 
-const { registerMock } = vi.hoisted(() => ({
+const { registerMock, googleRegisterMock } = vi.hoisted(() => ({
     registerMock: vi.fn(),
+    googleRegisterMock: vi.fn(),
 }));
 
 vi.mock("firebase/auth", () => ({
     getAuth: vi.fn(() => ({})),
     createUserWithEmailAndPassword: registerMock,
+    signInWithPopup: googleRegisterMock,
     GoogleAuthProvider: vi.fn(),
 }));
 
@@ -18,6 +20,7 @@ describe("RegisterPage", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         registerMock.mockResolvedValue({ user: { uid: "user-123" } });
+        googleRegisterMock.mockResolvedValue({ user: { uid: "google-user-123" } });
     });
 
     const renderPage = () => render(
@@ -63,5 +66,15 @@ describe("RegisterPage", () => {
         await user.click(screen.getByRole("button", { name: "Crear Cuenta" }));
 
         expect(await screen.findByText("Este correo electrónico ya está registrado.")).toBeInTheDocument();
+    });
+
+    it("permite registrarse con Google y navega a tareas", async () => {
+        const user = userEvent.setup();
+        renderPage();
+
+        await user.click(screen.getByRole("button", { name: "Registrarse con Google" }));
+
+        expect(googleRegisterMock).toHaveBeenCalledWith(expect.anything(), expect.anything());
+        expect(await screen.findByText("Tareas protegidas")).toBeInTheDocument();
     });
 });
