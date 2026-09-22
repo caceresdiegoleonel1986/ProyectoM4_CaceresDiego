@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTasks } from "../hooks/useTasks";
+import type { TaskFormValues, TaskPriority } from "../types/task";
 
 interface TodoFormProps {
     defaultDueDate?: string;
@@ -18,7 +19,7 @@ const TodoForm = ({
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [dueDate, setDueDate] = useState(defaultDueDate);
-    const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
+    const [priority, setPriority] = useState<TaskPriority>("medium");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
@@ -40,9 +41,16 @@ const TodoForm = ({
         e.preventDefault();
         if (!title.trim() || isSubmitting) return;
 
+        const formValues: TaskFormValues = {
+            title: title.trim(),
+            description: description.trim(),
+            dueDate: dueDate || null,
+            priority,
+        };
+
         try {
             setIsSubmitting(true);
-            await addTask(title.trim(), description.trim(), dueDate || null, priority);
+            await addTask(formValues.title, formValues.description, formValues.dueDate, formValues.priority);
             setTitle("");
             setDescription("");
             if (!defaultDueDate) {
@@ -72,7 +80,7 @@ const TodoForm = ({
                 <select
                     className="form-select form-select-sm"
                     value={priority}
-                    onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
+                    onChange={(e) => setPriority(e.target.value as TaskPriority)}
                 >
                     <option value="low">Prioridad Baja</option>
                     <option value="medium">Prioridad Media</option>
@@ -152,7 +160,7 @@ const TodoForm = ({
                 <select
                     className="form-select form-select-priority"
                     value={priority}
-                    onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
+                    onChange={(e) => setPriority(e.target.value as TaskPriority)}
                     title="Prioridad de la tarea"
                 >
                     <option value="low">🟢 Baja</option>
