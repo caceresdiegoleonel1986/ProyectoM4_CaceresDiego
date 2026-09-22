@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import TodoList from "../components/TodoList";
 import TodoForm from "../components/TodoForm";
-import EmailSummaryButton from "../components/Email.SumaryButton";
+import EmailSummaryButton from "../components/Email.SummaryButton";
 import { useAuth } from "../hooks/useAuth";
 import { useTasks } from "../hooks/useTasks";
 import type { Task } from "../types/task";
@@ -58,7 +58,7 @@ const TasksPage = () => {
                     <p>Organiza, gestiona y completa tus tareas diarias.</p>
                 </div>
                 <div className="tasks-top-actions">
-                    <EmailSummaryButton todos={tasks} userEmail={user?.email} />
+                    <EmailSummaryButton todos={tasks} userEmail={user?.email ?? null} />
                     <Link to="/agenda" className="btn btn-secondary btn-sm">
                         📅 Ver Agenda
                     </Link>
