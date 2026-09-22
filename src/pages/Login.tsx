@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../services/firebase";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import kairoLogoFull from "../assets/kairo-logo-full.png";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -22,17 +23,18 @@ const LoginPage = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             navigate(from, { replace: true });
-        } catch (err: any) {
+        } catch (err) {
+            const code = getAuthErrorMessage(err).code;
             if (
-                err.code === "auth/invalid-credential" ||
-                err.code === "auth/wrong-password" ||
-                err.code === "auth/user-not-found"
+                code === "auth/invalid-credential" ||
+                code === "auth/wrong-password" ||
+                code === "auth/user-not-found"
             ) {
                 setError("Correo o contraseña incorrectos.");
-            } else if (err.code === "auth/invalid-email") {
+            } else if (code === "auth/invalid-email") {
                 setError("El formato de correo no es válido.");
             } else {
-                setError("Error al iniciar sesión: " + err.message);
+                setError("Error al iniciar sesión: " + getAuthErrorMessage(err).message);
             }
         } finally {
             setIsSubmitting(false);
@@ -44,8 +46,8 @@ const LoginPage = () => {
         try {
             await signInWithPopup(auth, googleProvider);
             navigate(from, { replace: true });
-        } catch (err: any) {
-            setError("Error al iniciar sesión con Google: " + err.message);
+        } catch (err) {
+            setError("Error al iniciar sesión con Google: " + getAuthErrorMessage(err).message);
         }
     };
 
