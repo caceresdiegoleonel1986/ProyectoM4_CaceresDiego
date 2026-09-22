@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { Task } from "../types/task";
+import { sendTaskSummary } from "../services/email";
 
 interface EmailSummaryButtonProps {
   todos: Task[];
@@ -10,31 +11,20 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const hasTasks = todos.length > 0;
+
   async function handleSend() {
+    if (!hasTasks || !userEmail) return;
+
     setStatus("loading");
     setErrorMsg("");
 
-    const summary = buildTodoSummary(todos);
-
     try {
-      const res = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ to: userEmail, summary }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setStatus("error");
-        setErrorMsg(data?.message || "Ocurrió un error al enviar el email.");
-        return;
-      }
-
+      await sendTaskSummary({ to: userEmail, summary: buildTodoSummary(todos) });
       setStatus("success");
-    } catch {
+    } catch (error) {
       setStatus("error");
-      setErrorMsg("No se pudo conectar con el servidor.");
+      setErrorMsg(error instanceof Error ? error.message : "No se pudo conectar con el servidor.");
     }
   }
 
@@ -43,7 +33,8 @@ export function EmailSummaryButton({ todos, userEmail }: EmailSummaryButtonProps
       <button
         className={`btn-email-summary ${status === "success" ? "btn-success" : ""}`}
         onClick={handleSend}
-        disabled={status === "loading"}
+        disabled={status === "loading" || !hasTasks || !userEmail}
+        title={!hasTasks ? "Agrega al menos una tarea para enviar un resumen" : undefined}
       >
         {status === "loading" ? (
           <>
