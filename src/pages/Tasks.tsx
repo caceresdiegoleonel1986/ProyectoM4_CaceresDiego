@@ -9,7 +9,7 @@ import type { Task } from "../types/task";
 
 const TasksPage = () => {
     const { user } = useAuth();
-    const { tasks, loading, updateTask, deleteTask } = useTasks();
+    const { tasks, loading, error, updateTask, deleteTask } = useTasks();
 
     const [filter, setFilter] = useState<"all" | "pending" | "completed">("all");
     const [priorityFilter, setPriorityFilter] = useState<"all" | "low" | "medium" | "high">("all");
@@ -68,6 +68,13 @@ const TasksPage = () => {
                     </div>
                 </div>
             </div>
+
+            {error && (
+                <div className="auth-error" role="alert">
+                    <span>⚠️</span>
+                    <span>{error}</span>
+                </div>
+            )}
 
             {/* Stats Cards */}
             <div className="stats-grid">
