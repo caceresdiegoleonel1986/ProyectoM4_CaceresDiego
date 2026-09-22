@@ -4,11 +4,11 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { useTasks } from "../hooks/useTasks";
-import type { Task } from "../types/task";
+import type { Task, TaskPriority } from "../types/task";
 import { getTaskDateStr } from "../utils/dateHelpers";
 
 export default function Agenda() {
-    const { tasks, addTask, updateTask, deleteTask } = useTasks();
+    const { tasks, addTask, updateTask, deleteTask, error } = useTasks();
 
     // Default selected date to today (YYYY-MM-DD)
     const todayStr = new Date().toISOString().split("T")[0];
@@ -18,7 +18,7 @@ export default function Agenda() {
     // Quick add task inputs for the selected date
     const [quickTitle, setQuickTitle] = useState("");
     const [quickDesc, setQuickDesc] = useState("");
-    const [quickPriority, setQuickPriority] = useState<"low" | "medium" | "high">("medium");
+    const [quickPriority, setQuickPriority] = useState<TaskPriority>("medium");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Filter tasks based on status
@@ -106,6 +106,13 @@ export default function Agenda() {
 
     return (
         <div className="agenda-container">
+            {error && (
+                <div className="auth-error" role="alert">
+                    <span>⚠️</span>
+                    <span>{error}</span>
+                </div>
+            )}
+
             {/* Top Toolbar / Metrics */}
             <div className="agenda-header-card">
                 <div className="agenda-header-info">
@@ -247,7 +254,7 @@ export default function Agenda() {
                                     className="form-select form-select-sm"
                                     value={quickPriority}
                                     onChange={(e) =>
-                                        setQuickPriority(e.target.value as "low" | "medium" | "high")
+                                        setQuickPriority(e.target.value as TaskPriority)
                                     }
                                 >
                                     <option value="low">🟢 Baja</option>
