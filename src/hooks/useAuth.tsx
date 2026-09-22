@@ -33,17 +33,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const signUp = (email: string, password: string) =>
-    createUserWithEmailAndPassword(auth, email, password);
+  const signUp = async (email: string, password: string) => {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    setUser(cred.user);
+    return cred;
+  };
 
-  const signIn = (email: string, password: string) =>
-    signInWithEmailAndPassword(auth, email, password);
+  const signIn = async (email: string, password: string) => {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    setUser(cred.user);
+    return cred;
+  };
 
-  const signInWithGoogle = () =>
-    signInWithPopup(auth, new GoogleAuthProvider());
+  const signInWithGoogle = async () => {
+    const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+    setUser(cred.user);
+    return cred;
+  };
 
   const logout = async () => {
     await signOut(auth);
+    setUser(null);
   };
 
   const value: AuthContextType = {
