@@ -194,7 +194,10 @@ export default function Agenda() {
                             <span className="legend-dot dot-green"></span> Completada
                         </span>
                         <span className="legend-item">
-                            <span className="legend-dot dot-purple"></span> Pendiente (Media/Baja)
+                            <span className="legend-dot dot-blue"></span> Prioridad Baja
+                        </span>
+                        <span className="legend-item">
+                            <span className="legend-dot dot-purple"></span> Prioridad Media
                         </span>
                         <span className="legend-item">
                             <span className="legend-dot dot-red"></span> Prioridad Alta
@@ -314,6 +317,9 @@ export default function Agenda() {
                                             )}
                                             {task.priority === "low" && (
                                                 <span className="badge badge-muted">Baja</span>
+                                            )}
+                                            {!task.completed && task.priority === "medium" && (
+                                                <span className="badge badge-purple">Media</span>
                                             )}
                                         </div>
                                     </div>
