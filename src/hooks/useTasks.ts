@@ -10,7 +10,7 @@ import {
     where,
 } from "firebase/firestore";
 import { db } from "../services/firebase";
-import type { Task } from "../types/task";
+import type { Task, TaskPriority } from "../types/task";
 import { useAuth } from "./useAuth";
 import { getTaskDateStr } from "../utils/dateHelpers";
 
@@ -18,6 +18,7 @@ export const useTasks = () => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) {
@@ -39,7 +40,7 @@ export const useTasks = () => {
                         description: d.description || "",
                         completed: Boolean(d.completed),
                         userId: d.userId,
-                        priority: (d.priority as "low" | "medium" | "high") || "medium",
+                        priority: (d.priority as TaskPriority) || "medium",
                         createdAt:
                             typeof d.createdAt === "number"
                                 ? d.createdAt
@@ -51,10 +52,12 @@ export const useTasks = () => {
                 });
                 setTasks(data);
                 setLoading(false);
+                setError(null);
             },
-            (error) => {
-                console.error("Error al escuchar tareas en Firestore:", error);
+            (err) => {
+                console.error("Error al escuchar tareas en Firestore:", err);
                 setLoading(false);
+                setError("No se pudieron sincronizar tus tareas. Verifica tu conexión e intenta de nuevo.");
             }
         );
 
@@ -65,13 +68,13 @@ export const useTasks = () => {
         title: string,
         description?: string,
         dueDate?: string | null,
-        priority: "low" | "medium" | "high" = "medium"
+        priority: TaskPriority = "medium"
     ) => {
         if (!user) {
             throw new Error("No hay una sesión de usuario activa para crear la tarea.");
         }
 
-        const taskData: Record<string, any> = {
+        const taskData: Omit<Task, "id"> = {
             title: title.trim(),
             description: (description || "").trim(),
             completed: false,
@@ -81,25 +84,44 @@ export const useTasks = () => {
             dueDate: dueDate ? dueDate.trim() : null,
         };
 
-        return await addDoc(collection(db, "tasks"), taskData);
+        try {
+            const ref = await addDoc(collection(db, "tasks"), taskData);
+            setError(null);
+            return ref;
+        } catch (err) {
+            setError("No se pudo crear la tarea. Intenta nuevamente.");
+            throw err;
+        }
     };
 
     const updateTask = async (id: string, updates: Partial<Task>) => {
         const taskRef = doc(db, "tasks", id);
         // Evitamos enviar campos con valor undefined que Firestore rechaza
-        const cleanUpdates: Record<string, any> = {};
-        for (const [key, value] of Object.entries(updates)) {
+        const cleanUpdates: Partial<Task> = {};
+        for (const [key, value] of Object.entries(updates) as [keyof Task, Task[keyof Task]][]) {
             if (value !== undefined) {
-                cleanUpdates[key] = value;
+                (cleanUpdates as Record<string, unknown>)[key] = value;
             }
         }
-        await updateDoc(taskRef, cleanUpdates);
+        try {
+            await updateDoc(taskRef, cleanUpdates);
+            setError(null);
+        } catch (err) {
+            setError("No se pudo actualizar la tarea. Intenta nuevamente.");
+            throw err;
+        }
     };
 
     const deleteTask = async (id: string) => {
         const taskRef = doc(db, "tasks", id);
-        await deleteDoc(taskRef);
+        try {
+            await deleteDoc(taskRef);
+            setError(null);
+        } catch (err) {
+            setError("No se pudo eliminar la tarea. Intenta nuevamente.");
+            throw err;
+        }
     };
 
-    return { tasks, loading, addTask, updateTask, deleteTask };
+    return { tasks, loading, error, addTask, updateTask, deleteTask };
 };
