@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../services/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import kairoLogoFull from "../assets/kairo-logo-full.png";
+import { getAuthErrorMessage } from "../utils/authErrors";
 
 const RegisterPage = () => {
     const [email, setEmail] = useState("");
@@ -24,15 +25,16 @@ const RegisterPage = () => {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             navigate("/tasks");
-        } catch (err: any) {
-            if (err.code === "auth/email-already-in-use") {
+        } catch (err) {
+            const code = getAuthErrorMessage(err).code;
+            if (code === "auth/email-already-in-use") {
                 setError("Este correo electrónico ya está registrado.");
-            } else if (err.code === "auth/invalid-email") {
+            } else if (code === "auth/invalid-email") {
                 setError("El formato de correo no es válido.");
-            } else if (err.code === "auth/weak-password") {
+            } else if (code === "auth/weak-password") {
                 setError("La contraseña es demasiado débil.");
             } else {
-                setError("Error al registrarse: " + err.message);
+                setError("Error al registrarse: " + getAuthErrorMessage(err).message);
             }
         } finally {
             setIsSubmitting(false);
@@ -46,8 +48,8 @@ const RegisterPage = () => {
         try {
             await signInWithPopup(auth, googleProvider);
             navigate("/tasks");
-        } catch (err: any) {
-            setError("Error al registrarse con Google: " + err.message);
+        } catch (err) {
+            setError("Error al registrarse con Google: " + getAuthErrorMessage(err).message);
         } finally {
             setIsSubmitting(false);
         }
