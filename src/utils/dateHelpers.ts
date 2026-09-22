@@ -1,5 +1,14 @@
 import { Timestamp } from "firebase/firestore";
 
+// Detecta objetos tipo Timestamp (incluye mocks de tests) sin recurrir a 'any'
+function hasToDate(value: unknown): value is { toDate: () => Date } {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        typeof (value as { toDate?: unknown }).toDate === "function"
+    );
+}
+
 export function getTaskDateStr(
     dueDate: string | number | Timestamp | Date | null | undefined
 ): string | undefined {
@@ -13,16 +22,12 @@ export function getTaskDateStr(
         return new Date(dueDate).toISOString().split("T")[0];
     }
 
-    if (typeof (dueDate as any)?.toDate === "function") {
+    if (hasToDate(dueDate)) {
         try {
-            return (dueDate as any).toDate().toISOString().split("T")[0];
+            return dueDate.toDate().toISOString().split("T")[0];
         } catch {
             return undefined;
         }
-    }
-
-    if (dueDate instanceof Timestamp) {
-        return dueDate.toDate().toISOString().split("T")[0];
     }
 
     if (dueDate instanceof Date) {
