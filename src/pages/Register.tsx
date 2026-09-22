@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebase";
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../services/firebase";
 import { useNavigate, Link } from "react-router-dom";
 import kairoLogoFull from "../assets/kairo-logo-full.png";
 
@@ -34,6 +34,20 @@ const RegisterPage = () => {
             } else {
                 setError("Error al registrarse: " + err.message);
             }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleGoogleRegister = async () => {
+        setError("");
+        setIsSubmitting(true);
+
+        try {
+            await signInWithPopup(auth, googleProvider);
+            navigate("/tasks");
+        } catch (err: any) {
+            setError("Error al registrarse con Google: " + err.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -88,6 +102,16 @@ const RegisterPage = () => {
                         {isSubmitting ? "Registrando..." : "Crear Cuenta"}
                     </button>
 
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        style={{ width: "100%", padding: "12px", marginTop: "8px" }}
+                        onClick={handleGoogleRegister}
+                        disabled={isSubmitting}
+                    >
+                        Registrarse con Google
+                    </button>
+
                     {error && (
                         <div className="auth-error">
                             <span>⚠️</span>
@@ -105,4 +129,4 @@ const RegisterPage = () => {
     );
 };
 
-export default RegisterPage;
+export default RegisterPage;
