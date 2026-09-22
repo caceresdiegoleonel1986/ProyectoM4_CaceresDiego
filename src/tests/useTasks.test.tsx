@@ -133,6 +133,7 @@ describe("useTasks", () => {
 
         expect(result.current.loading).toBe(false);
         expect(result.current.tasks).toEqual([]);
+        expect(result.current.error).toMatch(/sincronizar/i);
     });
 
     it("cancela la suscripción al desmontarse", async () => {
@@ -186,5 +187,17 @@ describe("useTasks", () => {
         });
 
         expect(deleteDoc).toHaveBeenCalled();
+    });
+
+    it("expone un mensaje de error si deleteTask falla (caso borde)", async () => {
+        const { result } = renderHook(() => useTasks());
+        const { deleteDoc } = await import("firebase/firestore");
+        (deleteDoc as any).mockRejectedValueOnce(new Error("permission-denied"));
+
+        await act(async () => {
+            await expect(result.current.deleteTask("1")).rejects.toThrow();
+        });
+
+        expect(result.current.error).toMatch(/no se pudo eliminar/i);
     });
 });
