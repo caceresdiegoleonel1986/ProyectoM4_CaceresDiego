@@ -1,4 +1,4 @@
-import type { Task } from "../types/task";
+import type { Task, TaskPriority } from "../types/task";
 import Loader from "./Loader";
 
 interface TodoListProps {
@@ -35,7 +35,7 @@ const getDueDateBadge = (dueDate?: number | string | null, completed = false) =>
     return <span className="badge badge-blue">🗓️ {formatted}</span>;
 };
 
-const getPriorityBadge = (priority?: "low" | "medium" | "high") => {
+const getPriorityBadge = (priority?: TaskPriority) => {
     if (!priority) return null;
     if (priority === "high") return <span className="badge badge-red">⚡ Alta</span>;
     if (priority === "low") return <span className="badge badge-muted">Baja</span>;
