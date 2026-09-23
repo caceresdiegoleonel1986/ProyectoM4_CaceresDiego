@@ -86,16 +86,39 @@ const Navbar = () => {
                 )}
             </ul>
 
-            {user && (
-                <div className="navbar-footer">
+            <div className="navbar-footer">
+                <div className="navbar-social-links" aria-label="Perfiles de Caceres Diego">
+                    <a
+                        className="navbar-social-link"
+                        href="https://github.com/caceresdiegoleonel1986"
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Visitar perfil de GitHub"
+                        title="GitHub"
+                    >
+                        <img src="https://cdn.simpleicons.org/github/white" alt="" width="20" height="20" />
+                    </a>
+                    <a
+                        className="navbar-social-link"
+                        href="https://www.linkedin.com/in/diego-leonel-caceres/"
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Visitar perfil de LinkedIn"
+                        title="LinkedIn"
+                    >
+                        <img src="https://cdn.simpleicons.org/linkedin/white" alt="" width="20" height="20" />
+                    </a>
+                </div>
+
+                {user && (
                     <button className="btn-logout" onClick={logout} title="Cerrar sesión">
                         <span>🚪</span>
                         <span>Cerrar sesión</span>
                     </button>
-                </div>
-            )}
+                )}
+            </div>
         </nav>
     );
 };
 
-export default Navbar;
+export default Navbar;
