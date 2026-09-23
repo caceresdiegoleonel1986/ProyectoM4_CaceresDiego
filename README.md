@@ -140,7 +140,7 @@ La cobertura incluye autenticación, rutas protegidas, formulario y lista de tar
 
 ## Firestore
 
-Las reglas se encuentran en [firestone.rules](firestone.rules). El archivo [firebase.json](firebase.json) ya está configurado para utilizarlas.
+Las reglas se encuentran en [firestore.rules](firestore.rules). El archivo [firebase.json](firebase.json) ya está configurado para utilizarlas.
 
 Cada tarea debe guardar el `userId` del usuario autenticado. Las reglas permiten leer, modificar y eliminar únicamente las tareas propias:
 
