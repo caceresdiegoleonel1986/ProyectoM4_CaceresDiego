@@ -35,7 +35,7 @@ export default function Agenda() {
             const dateStr = getTaskDateStr(task.dueDate)!;
             const isCompleted = task.completed;
 
-            let bgColor = "#6d28d9"; // default purple
+            let bgColor = "#f59e0b"; // yellow for medium priority
             if (isCompleted) {
                 bgColor = "#10b981"; // green
             } else if (task.priority === "high") {
@@ -204,7 +204,7 @@ export default function Agenda() {
                             <span className="legend-dot dot-blue"></span> Prioridad Baja
                         </span>
                         <span className="legend-item">
-                            <span className="legend-dot dot-purple"></span> Prioridad Media
+                            <span className="legend-dot dot-amber"></span> Prioridad Media
                         </span>
                         <span className="legend-item">
                             <span className="legend-dot dot-red"></span> Prioridad Alta
@@ -326,7 +326,7 @@ export default function Agenda() {
                                                 <span className="badge badge-muted">Baja</span>
                                             )}
                                             {!task.completed && task.priority === "medium" && (
-                                                <span className="badge badge-purple">Media</span>
+                                                <span className="badge badge-amber">Media</span>
                                             )}
                                         </div>
                                     </div>
